@@ -1,94 +1,198 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+# '''
+# Linked List hash table key/value pair
+# '''
+# when number of nodes inside is .7 of capasity, auto update:
+
+
 class LinkedPair:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.next = None
+    def __init__(self, node_key, node_value):
+        self.node_key = node_key
+        self.node_value = node_value
+        self.next_1 = None
+
+    # # print method...what is this called?
+    def __repr__(self):
+        return f"Key is:{self.node_key}, Value is:{self.node_value}, Next Node is:{self.next_1}"
+
 
 class HashTable:
-    '''
-    A hash table that with `capacity` buckets
-    that accepts string keys
-    '''
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
-        self.storage = [None] * capacity
+        self.storage_array = [None] * capacity  # list of lists of nodes
+        self.counter = 0  # for tracking max capacity for resizing 7%
 
+    def _hash(self, node_key):
+        # # First Part:
+        # # turning a string or int into an int
 
-    def _hash(self, key):
-        '''
-        Hash an arbitrary key and return an integer.
+        # set variable
+        int_output = 0
+        # iterate through input string
+        for i in str(node_key):
+            # convert each letter to a number
+            # and add that to the output
+            int_output += ord(i) - 96
+            # make sure number is positive
+            int_output = abs(int_output)
+            # make sure number is an integer
+            int_output = int(int_output)
 
-        You may replace the Python hash with DJB2 as a stretch goal.
-        '''
-        return hash(key)
+        # return hash(key)
+        return int_output
 
+    # def _hash_djb2(self, key):
+    #     '''
+    #     Hash an arbitrary key using DJB2 hash
+    #     OPTIONAL STRETCH: Research and implement DJB2
+    #     '''
+    #     pass
 
-    def _hash_djb2(self, key):
-        '''
-        Hash an arbitrary key using DJB2 hash
+    def _hash_mod(self, node_key):
+        # # Second Part:
+        # # making a hash of that input (string or int)
+        # note: modulus and hash table size
+        # using %x means that your array will be x in size
+        # hash_output = int_output % hashtable_length_you_want
+        return self._hash(node_key) % self.capacity
 
-        OPTIONAL STRETCH: Research and implement DJB2
-        '''
-        pass
+    def insert(self, node_key, node_value):
 
+        # step 1: run node_key through hashing_function
+        index_to_look_in = self._hash_mod(node_key)
 
-    def _hash_mod(self, key):
-        '''
-        Take an arbitrary key and return a valid integer index
-        within the storage capacity of the hash table.
-        '''
-        return self._hash(key) % self.capacity
+        # insepction
+        # print("index_to_look_in", index_to_look_in)
 
+        # 1. check if empty slot (no collision) simple insert
+        # 2. if not, check if item already there (do nothing)
+        # 3. if not, put at end of last node and attach
+        # 4. if you are replacing a value (overallaping key) print warning
 
-    def insert(self, key, value):
-        '''
-        Store the value with the given key.
+        # make a linked list node (instance of class)
+        this_node_mask = LinkedPair(node_key, node_value)
 
-        # Part 1: Hash collisions should be handled with an error warning. (Think about and
-        # investigate the impact this will have on the tests)
+        # 1. check if there is an empty "bucket" (no collision): simple insert
+        if self.storage_array[index_to_look_in] is None:
+            # # inspection
+            # print("test print", self.storage_array[index_to_look_in])
+            # put the node in the array
+            self.storage_array[index_to_look_in] = [this_node_mask]
 
-        # Part 2: Change this so that hash collisions are handled with Linked List Chaining.
+        else:  # if the needed "bucket" is full:
+            # inspection
+            # print("collision!")
 
-        Fill this in.
-        '''
-        pass
+            # 2. if not, check if already there (do nothing)
+            node_being_checked = self.storage_array[index_to_look_in]
 
+            # traverse: as long as there is a node to check
+            while node_being_checked[0] is not None:
 
+                # while this node isn't a key/value match
+                # for what you are inserting
+                # then keep "traversing" ;)
+                # until you get to the end, then insert:
 
-    def remove(self, key):
-        '''
-        Remove the value stored with the given key.
+                # Does key exist already
+                if node_being_checked[0].node_key == node_key:
+                    # inspection
+                    # print("same key clicker")
 
-        Print a warning if the key is not found.
+                    # if key is the same, check the value
+                    if node_being_checked[0].node_value != node_value:
+                        # print and give warning: replacing value
+                        # print(
+                        #    "Warning! This is replacing a value due to an overlapping key."
+                        # )
 
-        Fill this in.
-        '''
-        pass
+                        # replaces old value only with a new one
+                        node_being_checked[0].node_value = node_value
 
+                    # exit loop
+                    break
 
-    def retrieve(self, key):
-        '''
-        Retrieve the value stored with the given key.
+                else:  # both key and value are the same: do nothing
+                    break  # stop
 
-        Returns None if the key is not found.
+                if node_being_checked[0].next_1 is None:  # if the end
+                    # put the new node at the end of the list
+                    self.storage_array[index_to_look_in][0].next_1 = [this_node_mask]
 
-        Fill this in.
-        '''
-        pass
+                # if this is not the end
+                else:  # update the traversing pointer "node_being_checked"
+                    node_being_checked = node_being_checked[0].next_1
 
+    def remove(self, node_key):
+
+        # step 1: run  node_key through hashing_function
+        index_to_look_in = self._hash_mod(node_key)
+
+        # check if None
+        if self.storage_array[index_to_look_in] is not None:
+
+            # 2. if not, check if already there (do nothing)
+            node_being_checked = self.storage_array[index_to_look_in]
+
+            # traverse: as long as there is a node to check
+            while node_being_checked[0] is not None:
+
+                # if key exists:
+                if node_being_checked[0].node_key == node_key:
+                    # erase value
+                    node_being_checked[0].node_value = None
+
+                    # end loop
+                    break
+
+                # move forward the linked-node checking pointer
+                node_being_checked = node_being_checked[0].next_1
+
+        else:  # if item is not there
+            return "Key is not found."
+
+    def retrieve(self, node_key):
+
+        # step 1: run  node_key through hashing_function
+        index_to_look_in = self._hash_mod(node_key)
+
+        # check if empty
+        if self.storage_array[index_to_look_in] is not None:
+
+            # 2. if not, check if already there (do nothing)
+            node_being_checked = self.storage_array[index_to_look_in]
+
+            # traverse: as long as there is a node to check
+            while node_being_checked[0] is not None:
+
+                # if key exists:
+                if node_being_checked[0].node_key == node_key:
+                    return node_being_checked[0].node_value
+
+                # move forward the linked-node checking pointer
+                node_being_checked = node_being_checked[0].next_1
+
+        else:  # if item is not there
+            return None
+        # return value
 
     def resize(self):
-        '''
-        Doubles the capacity of the hash table and
-        rehash all key/value pairs.
+        # store the old data
+        old_data = self.storage_array.copy()
 
-        Fill this in.
-        '''
-        pass
+        # make storage twice as bit, and blank
+        self.capacity *= 2
+        self.storage_array = [None] * self.capacity
 
+        # itterate through list
+        for i in range(len(old_data)):
+            list_node = old_data[i][0]
+            # iterate through node linked lists
+            while list_node:
+                self.insert(list_node.node_key, list_node.node_value)
+                list_node = list_node.next_1
 
 
 if __name__ == "__main__":
