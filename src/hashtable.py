@@ -1,9 +1,6 @@
 # '''
 # Linked List hash table key/value pair
 # '''
-# '''
-# Linked List hash table key/value pair
-# '''
 # when number of nodes inside is .7 of capasity, auto update:
 
 
@@ -21,7 +18,7 @@ class LinkedPair:
 class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
-        self.storage_array = [None] * capacity  # list of lists of nodes
+        self.storage = [None] * capacity  # list of lists of nodes
         self.counter = 0  # for tracking max capacity for resizing 7%
 
     def _hash(self, node_key):
@@ -62,11 +59,13 @@ class HashTable:
 
         # step 1: run node_key through hashing_function
         index_to_look_in = self._hash_mod(node_key)
+        node_being_checked = self.storage[index_to_look_in]
+        # could be done in one line too, case by case
 
         # insepction
         # print("index_to_look_in", index_to_look_in)
 
-        # 1. check if empty slot (no collision) simple insert
+        # 1. check if empty blucket (no collision) simple insert
         # 2. if not, check if item already there (do nothing)
         # 3. if not, put at end of last node and attach
         # 4. if you are replacing a value (overallaping key) print warning
@@ -75,18 +74,17 @@ class HashTable:
         this_node_mask = LinkedPair(node_key, node_value)
 
         # 1. check if there is an empty "bucket" (no collision): simple insert
-        if self.storage_array[index_to_look_in] is None:
+        if node_being_checked is None:
             # # inspection
-            # print("test print", self.storage_array[index_to_look_in])
+            # print("test print", node_being_checked)
             # put the node in the array
-            self.storage_array[index_to_look_in] = this_node_mask
+            node_being_checked = this_node_mask
 
         else:  # if the needed "bucket" is full:
             # inspection
             # print("collision!")
 
             # 2. if not, check if already there (do nothing)
-            node_being_checked = self.storage_array[index_to_look_in]
 
             # traverse: as long as there is a node to check
             while node_being_checked is not None:
@@ -129,7 +127,7 @@ class HashTable:
                     # print("putting in value")
 
                     # put the new node at the end of the list
-                    self.storage_array[index_to_look_in].next_1 = this_node_mask
+                    node_being_checked.next_1 = this_node_mask
 
                 # if this is not the end
                 else:  # update the traversing pointer "node_being_checked"
@@ -139,12 +137,12 @@ class HashTable:
 
         # step 1: run  node_key through hashing_function
         index_to_look_in = self._hash_mod(node_key)
+        node_being_checked = self.storage[index_to_look_in]
 
-        # check if None
-        if self.storage_array[index_to_look_in] is not None:
+        # check if not None
+        if node_being_checked is not None:
 
             # 2. if not, check if already there (do nothing)
-            node_being_checked = self.storage_array[index_to_look_in]
 
             # traverse: as long as there is a node to check
             while node_being_checked is not None:
@@ -154,6 +152,9 @@ class HashTable:
                     # erase value
 
                     node_being_checked.node_value = None
+
+                    # # can break because your done
+                    # break
 
                 # move forward the linked-node checking pointer
                 node_being_checked = node_being_checked.next_1
@@ -165,12 +166,12 @@ class HashTable:
 
         # step 1: run  node_key through hashing_function
         index_to_look_in = self._hash_mod(node_key)
+        node_being_checked = self.storage[index_to_look_in]
 
         # check if empty
-        if self.storage_array[index_to_look_in] is not None:
+        if self.storage[index_to_look_in] is not None:
 
             # 2. if not, check if already there (do nothing)
-            node_being_checked = self.storage_array[index_to_look_in]
 
             # traverse: as long as there is a node to check
             while node_being_checked is not None:
@@ -188,11 +189,12 @@ class HashTable:
 
     def resize(self):
         # store the old data
-        old_data = self.storage_array.copy()
+        old_data = self.storage.copy()
+        # .copy isn't needed!!
 
         # make storage twice as bit, and blank
         self.capacity *= 2
-        self.storage_array = [None] * self.capacity
+        self.storage = [None] * self.capacity
 
         # itterate through list
         for i in range(len(old_data)):
