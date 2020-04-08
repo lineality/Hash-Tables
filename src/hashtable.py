@@ -7,6 +7,23 @@
 # when number of nodes inside is .7 of capasity, auto update:
 
 
+# '''
+# Linked List hash table key/value pair
+# '''
+# '''
+# Linked List hash table key/value pair
+# '''
+# when number of nodes inside is .7 of capasity, auto update:
+
+# '''
+# Linked List hash table key/value pair
+# '''
+# '''
+# Linked List hash table key/value pair
+# '''
+# when number of nodes inside is .7 of capasity, auto update:
+
+
 class LinkedPair:
     def __init__(self, node_key, node_value):
         self.node_key = node_key
@@ -79,7 +96,7 @@ class HashTable:
             # # inspection
             # print("test print", self.storage_array[index_to_look_in])
             # put the node in the array
-            self.storage_array[index_to_look_in] = [this_node_mask]
+            self.storage_array[index_to_look_in] = this_node_mask
 
         else:  # if the needed "bucket" is full:
             # inspection
@@ -89,7 +106,10 @@ class HashTable:
             node_being_checked = self.storage_array[index_to_look_in]
 
             # traverse: as long as there is a node to check
-            while node_being_checked[0] is not None:
+            while node_being_checked is not None:
+
+                # inspection
+                # print("traverse")
 
                 # while this node isn't a key/value match
                 # for what you are inserting
@@ -97,33 +117,40 @@ class HashTable:
                 # until you get to the end, then insert:
 
                 # Does key exist already
-                if node_being_checked[0].node_key == node_key:
+                if node_being_checked.node_key == node_key:
                     # inspection
                     # print("same key clicker")
 
+                    # inspection
+                    # print("key exists")
+
                     # if key is the same, check the value
-                    if node_being_checked[0].node_value != node_value:
+                    if node_being_checked.node_value != node_value:
                         # print and give warning: replacing value
                         # print(
                         #    "Warning! This is replacing a value due to an overlapping key."
                         # )
 
                         # replaces old value only with a new one
-                        node_being_checked[0].node_value = node_value
+                        node_being_checked.node_value = node_value
 
-                    # exit loop
-                    break
+                        # exit loop
+                        break
 
-                else:  # both key and value are the same: do nothing
-                    break  # stop
+                    else:  # both key and value are the same: do nothing
+                        break  # stop
 
-                if node_being_checked[0].next_1 is None:  # if the end
+                if node_being_checked.next_1 is None:  # if the end
+
+                    # inspection
+                    # print("putting in value")
+
                     # put the new node at the end of the list
-                    self.storage_array[index_to_look_in][0].next_1 = [this_node_mask]
+                    self.storage_array[index_to_look_in].next_1 = this_node_mask
 
                 # if this is not the end
                 else:  # update the traversing pointer "node_being_checked"
-                    node_being_checked = node_being_checked[0].next_1
+                    node_being_checked = node_being_checked.next_1
 
     def remove(self, node_key):
 
@@ -137,18 +164,18 @@ class HashTable:
             node_being_checked = self.storage_array[index_to_look_in]
 
             # traverse: as long as there is a node to check
-            while node_being_checked[0] is not None:
+            while node_being_checked is not None:
 
                 # if key exists:
-                if node_being_checked[0].node_key == node_key:
+                if node_being_checked.node_key == node_key:
                     # erase value
-                    node_being_checked[0].node_value = None
+                    node_being_checked.node_value = None
 
                     # end loop
                     break
 
                 # move forward the linked-node checking pointer
-                node_being_checked = node_being_checked[0].next_1
+                node_being_checked = node_being_checked.next_1
 
         else:  # if item is not there
             return "Key is not found."
@@ -165,14 +192,14 @@ class HashTable:
             node_being_checked = self.storage_array[index_to_look_in]
 
             # traverse: as long as there is a node to check
-            while node_being_checked[0] is not None:
+            while node_being_checked is not None:
 
                 # if key exists:
-                if node_being_checked[0].node_key == node_key:
-                    return node_being_checked[0].node_value
+                if node_being_checked.node_key == node_key:
+                    return node_being_checked.node_value
 
                 # move forward the linked-node checking pointer
-                node_being_checked = node_being_checked[0].next_1
+                node_being_checked = node_being_checked.next_1
 
         else:  # if item is not there
             return None
@@ -188,7 +215,7 @@ class HashTable:
 
         # itterate through list
         for i in range(len(old_data)):
-            list_node = old_data[i][0]
+            list_node = old_data[i]
             # iterate through node linked lists
             while list_node:
                 self.insert(list_node.node_key, list_node.node_value)
