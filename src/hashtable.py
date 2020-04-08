@@ -143,7 +143,7 @@ class HashTable:
                 if node_being_checked[0].node_key == node_key:
                     # erase value
                     node_being_checked[0].node_value = None
-
+                    
                     # end loop
                     break
 
@@ -152,6 +152,7 @@ class HashTable:
 
         else:  # if item is not there
             return "Key is not found."
+
 
     def retrieve(self, node_key):
 
