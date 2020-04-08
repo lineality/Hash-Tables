@@ -7,23 +7,6 @@
 # when number of nodes inside is .7 of capasity, auto update:
 
 
-# '''
-# Linked List hash table key/value pair
-# '''
-# '''
-# Linked List hash table key/value pair
-# '''
-# when number of nodes inside is .7 of capasity, auto update:
-
-# '''
-# Linked List hash table key/value pair
-# '''
-# '''
-# Linked List hash table key/value pair
-# '''
-# when number of nodes inside is .7 of capasity, auto update:
-
-
 class LinkedPair:
     def __init__(self, node_key, node_value):
         self.node_key = node_key
@@ -169,22 +152,14 @@ class HashTable:
                 # if key exists:
                 if node_being_checked.node_key == node_key:
                     # erase value
-<<<<<<< HEAD
-                    node_being_checked.node_value = None
 
-=======
-                    node_being_checked[0].node_value = None
-                    
->>>>>>> 7f52b68c6ffdc3dc384bce3a8a7f65c6240f75c6
-                    # end loop
-                    break
+                    node_being_checked.node_value = None
 
                 # move forward the linked-node checking pointer
                 node_being_checked = node_being_checked.next_1
 
         else:  # if item is not there
             return "Key is not found."
-
 
     def retrieve(self, node_key):
 
